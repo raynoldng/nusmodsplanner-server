@@ -1,7 +1,7 @@
 import sys
 import json
 sys.path.append('nusmods-planner/nusmodsplanner')
-import querySolver
+import querySolverBV
 
 data = sys.argv[1]
 data = json.loads(data)
@@ -17,7 +17,12 @@ if 'optMods' in data:
 else:
     optMods = []
 
+''' Removed since solving the query has been moved to the client side
 schedule = querySolver.timetablePlanner(int(numTake), compMods, optMods)
 print schedule
+'''
+#print 'Calling: ' + str(int(numTake)) + " " + str(compMods) + " " + str(optMods)
+smtlib2 = querySolverBV.parseQuery(int(numTake), compMods, optMods)
+print smtlib2
 
 sys.stdout.flush()

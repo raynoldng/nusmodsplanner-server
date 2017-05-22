@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import PythonShell from 'python-shell';
 
 let app = express(),
-    port = process.env.PORT || 3000;
+    port = process.env.PORT || 3001;
 let router = express.Router();
 app.server = http.createServer(app);
 
@@ -13,12 +13,35 @@ router.get('/', (req, res) => {
 });
 
 router.get('/freeday/:numToTake/:compMods', (req, res) => {
+  var numToTake = req.params.numToTake,
+      compMods = req.params.compMods.split(','),
+      optMods = req.params.optMods.split(',');
+
   const data = {
-    numToTake: req.params.numToTake,
-    compMods: req.params.compMods.split(',')
+    numToTake: numToTake,
+    compMods: (compMods == 'null') ? [] : compMods,
+    optMods: (optMods == 'null') ? [] : optMods
   };
 
-  console.log(data);
+  // do somthing with the data
+  dataHandler(data, (data) => {
+    res.send(data);
+  });
+
+});
+
+router.get('/freeday/:numToTake/:compMods/:optMods', (req, res) => {
+  var numToTake = req.params.numToTake,
+      compMods = req.params.compMods.split(','),
+      optMods = req.params.optMods.split(',');
+
+  console.log(`data: ${numToTake}, ${compMods}, ${optMods}`);
+
+  const data = {
+    numToTake: numToTake,
+    compMods: (compMods == 'null') ? [] : compMods,
+    optMods: (optMods == 'null') ? [] : optMods
+  };
 
   // do somthing with the data
   dataHandler(data, (data) => {
@@ -62,11 +85,12 @@ let dataHandler = function(data, cb) {
       'MA1101R_Laboratory_B08', 'MA1101R_Tutorial_T01', 'MA1101R_Lecture_SL1',
       'CS1231_Sectional Teaching_1', 'CS1231_Tutorial_4', 'CS2105_Lecture_1',
       'CS2105_Tutorial_8']"]
-    */
+    // removed for now since we only return SMTLIB2 query for now
     results = results[0];
     results.replace(/'/g, "");
     console.log(`New results string: ${results}`);
     console.log(results);
+    */
     if (cb) {
       cb(results);
     }
