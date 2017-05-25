@@ -35,16 +35,25 @@ npm install
 
 Retrieves a schedule from the given list of mods that has a free day. Returns `[]` if none exist.
 
-**Example**
+**Examples**
+```
+localhost:3001/api/freeday/4/null/CS2020,ST2131,CS2100,MA1101R,CS1231,CS2105,CS1020
+```
+
+Returns a very long query in [ SMTLIB ]( http://smtlib.cs.uiowa.edu/language.shtml ) 2 syntax. 
+
+```
+; benchmark
+(set-info :status unknown)
+(set-logic QF_BV)
+(declare-fun m_239 () (_ BitVec 16))
+(declare-fun m_238 () (_ BitVec 16))
+;; truncated
+(check-sat)
+```
 
 ```
 GET /freeday/4/CS2020,ST2131,CS2100,MA1101R,CS1231,CS2105,CS1020
-```
-```
-['CS2100_Laboratory_4', 'CS2100_Tutorial_7', 'CS2100_Lecture_1',
- 'MA1101R_Laboratory_B08', 'MA1101R_Tutorial_T01', 'MA1101R_Lecture_SL1', 
- 'CS1231_Sectional Teaching_1', 'CS1231_Tutorial_4', 'CS2105_Lecture_1', 
- 'CS2105_Tutorial_8']
 ```
 
 ### `GET freeday/:numToTake/:compMods/:optMods`

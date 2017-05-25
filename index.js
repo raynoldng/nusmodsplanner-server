@@ -14,48 +14,41 @@ router.get('/', (req, res) => {
 
 router.get('/freeday/:numToTake/:compMods', (req, res) => {
   var numToTake = req.params.numToTake,
-      compMods = req.params.compMods.split(','),
-      optMods = req.params.optMods.split(',');
+      compMods = req.params.compMods,
+      optMods = req.params.optMods;
 
   const data = {
     numToTake: numToTake,
-    compMods: (compMods == 'null') ? [] : compMods,
-    optMods: (optMods == 'null') ? [] : optMods
+    compMods: (compMods == 'null') ? [] : compMods.split(','),
+    optMods: (optMods == 'null') ? [] : optMods.split(',')
   };
+
+  console.log(data);
 
   // do somthing with the data
   dataHandler(data, (data) => {
-    res.send(data);
+    res.send(data.join('\n'));
   });
 
 });
 
 router.get('/freeday/:numToTake/:compMods/:optMods', (req, res) => {
   var numToTake = req.params.numToTake,
-      compMods = req.params.compMods.split(','),
-      optMods = req.params.optMods.split(',');
-
-  console.log(`data: ${numToTake}, ${compMods}, ${optMods}`);
+      compMods = req.params.compMods,
+      optMods = req.params.optMods;
 
   const data = {
     numToTake: numToTake,
-    compMods: (compMods == 'null') ? [] : compMods,
-    optMods: (optMods == 'null') ? [] : optMods
+    compMods: (compMods == 'null') ? [] : compMods.split(','),
+    optMods: (optMods == 'null') ? [] : optMods.split(',')
   };
 
   // do somthing with the data
   dataHandler(data, (data) => {
-    res.send(data);
+    res.send(data.join('\n'));
   });
 
 });
-/*
-  Sample test
-  localhost:3000/api/freeday/4/CS1010,CS2020,CS2100,MA1102R,CS1231
-
-  Output:
-  {"mods":"CS1010,CS2020"}
-*/
 
 router.get('/freeday/:mods/:options', (req, res) => {
   console.log(req.params.options);
@@ -76,21 +69,7 @@ let dataHandler = function(data, cb) {
 
   PythonShell.run('query.py', options, (err, results) => {
     if (err) throw err;
-    // results is an array consisting of messages collected during execution
-    console.log('results: %j', results);
-    /*
-      now process the results, it will look like this:
 
-      ["['CS2100_Laboratory_4', 'CS2100_Tutorial_7', 'CS2100_Lecture_1',
-      'MA1101R_Laboratory_B08', 'MA1101R_Tutorial_T01', 'MA1101R_Lecture_SL1',
-      'CS1231_Sectional Teaching_1', 'CS1231_Tutorial_4', 'CS2105_Lecture_1',
-      'CS2105_Tutorial_8']"]
-    // removed for now since we only return SMTLIB2 query for now
-    results = results[0];
-    results.replace(/'/g, "");
-    console.log(`New results string: ${results}`);
-    console.log(results);
-    */
     if (cb) {
       cb(results);
     }

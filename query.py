@@ -1,6 +1,6 @@
+import config
 import sys
 import json
-sys.path.append('nusmods-planner/nusmodsplanner')
 import querySolverBV
 
 data = sys.argv[1]
