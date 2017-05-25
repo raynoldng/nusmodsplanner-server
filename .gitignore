@@ -1,1 +1,9 @@
-node_moules/
+bin/
+*.pyc
+include/
+lib/
+node_modules/
+package.json
+query.py
+readme.md
+pip-selfcheck.json
