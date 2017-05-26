@@ -1,8 +1,8 @@
-import express from 'express';
-import http from 'http';
-import bodyParser from 'body-parser';
-import PythonShell from 'python-shell';
-import cors from 'cors';
+var express = require('express');
+var http = require('http');
+var bodyParser = require('body-parser');
+var PythonShell = require('python-shell');
+var cors = require('cors');
 
 let app = express(),
     port = process.env.PORT || 3001;
