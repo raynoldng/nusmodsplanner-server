@@ -16,10 +16,20 @@ app.server = http.createServer(app);
 //   next();
 // });
 
+// TODO decide if we need this
 app.use(cors());
 
+// add static assest directories
+app.use("/static", express.static(__dirname + '/static'));
+app.use("/build", express.static(__dirname + '/build'));
+
+// ROUTES
+// router.get('/', (req, res) => {
+//   res.json({message: 'Hooray! Welcome to our API!'});
+// });
+
 router.get('/', (req, res) => {
-  res.json({message: 'Hooray! Welcome to our API!'});
+  res.sendFile(path.join(__dirname + '/index.html'));
 });
 
 router.get('/freeday/:numToTake/:compMods', (req, res) => {
@@ -37,7 +47,7 @@ router.get('/freeday/:numToTake/:compMods', (req, res) => {
 
   // do somthing with the data
   dataHandler(data, (data) => {
-    res.send(data.join('\n'));
+    res.send('; benchmark\\n' + data.splice(2).join('\\n') + '\\n(exit)');
   });
 
 });
@@ -55,7 +65,7 @@ router.get('/freeday/:numToTake/:compMods/:optMods', (req, res) => {
 
   // do somthing with the data
   dataHandler(data, (data) => {
-    res.send(data.join('\n'));
+    res.send('; benchmark\\n' + data.splice(2).join('\\n') + '\\n(exit)');
   });
 
 });
