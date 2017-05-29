@@ -3,6 +3,7 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var PythonShell = require('python-shell');
 var cors = require('cors');
+var path = require('path');
 
 let app = express(),
     port = process.env.PORT || 3001;
@@ -28,7 +29,7 @@ app.use("/build", express.static(__dirname + '/build'));
 //   res.json({message: 'Hooray! Welcome to our API!'});
 // });
 
-router.get('/', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
@@ -47,7 +48,7 @@ router.get('/freeday/:numToTake/:compMods', (req, res) => {
 
   // do somthing with the data
   dataHandler(data, (data) => {
-    res.send('; benchmark\\n' + data.splice(2).join('\\n') + '\\n(exit)');
+    res.send('; benchmark\n' + data.splice(2).join('\n') + '\n(exit)');
   });
 
 });
@@ -65,7 +66,7 @@ router.get('/freeday/:numToTake/:compMods/:optMods', (req, res) => {
 
   // do somthing with the data
   dataHandler(data, (data) => {
-    res.send('; benchmark\\n' + data.splice(2).join('\\n') + '\\n(exit)');
+    res.send('; benchmark\n' + data.splice(2).join('\n') + '\n(exit)');
   });
 
 });
