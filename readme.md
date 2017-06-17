@@ -20,7 +20,6 @@ Install z3-solver and requests
 
 ```shell
 pip install z3-solver
-pip install requests    # not actually in use yet
 ```
 
 ### Node.js
