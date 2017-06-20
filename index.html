@@ -1,0 +1,51 @@
+<html>
+<head>
+  <title>NUSMods Planner Alpha</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+<p>
+Demo of NUSModsPlanner, enter the mods that you are interested in separated by a comma, for exmaple: CS1010, CS2100, MA2101, CS1231, GER1000
+</p>
+
+<p>Source code and instructions on how to build can be found here <a href="https://github.com/raynoldng/nusmodsplanner-server">link</a></p>
+
+
+Input:<br/>
+<textarea id='input' cols=60 rows=30></textarea><br/>
+Output:<br/>
+<textarea id='output' cols=60 rows=10>
+</textarea><br/>
+
+<script src="static/boolector.js"></script>
+<script>
+var solve_string = Module.cwrap('solve_string', 'string', ['string', 'number']);
+var BASE_URL = 'http://localhost:3001'
+// For now no error checking what so ever
+function query() {
+  // test for compulsory mods first
+  var input = document.getElementById('input').value;
+  var test_url = BASE_URL + "/api/freeday/4/null/CS2020,ST2131,CS2100,MA1101R,CS1231,CS2105,CS1020";
+  jQuery.get(test_url, function (data, status) {
+    /* alert("Data: " + data + "\nStatus: " + status);*/
+    console.log(data);
+    var result = solve_string(data, 2)
+  })
+}
+
+
+// Testing function.
+var solve_string = Module.cwrap('solve_string', 'string', ['string', 'number']);
+function test(problem, format, expected) {
+  // console.log('Trying to solve: ' + problem);
+  var result = solve_string(problem, format);
+  console.log('Got: ' + result);
+  console.log('Expected: ' + expected);
+}
+</script>
+<input value='Solve' type='button' onclick='query()'>
+
+</body>
+</html>
