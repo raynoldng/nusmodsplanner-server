@@ -66,7 +66,15 @@ router.get('/freeday/:numToTake/:compMods/:optMods', (req, res) => {
 
   // do somthing with the data
   dataHandler(data, (data) => {
-    res.send('; benchmark\n' + data.splice(2).join('\n') + '\n(exit)');
+    // console.log(data);
+    // data is a 2 element array
+    // var data2 = JSON.parse(data);
+    console.log('attempting to parse:');
+    console.log(data[data.length - 1].replace(/u'(?=[^:]+')/g, "'"));
+    var moduleMapping = JSON.parse(data[data.length - 1].replace(/u'(?=[^:]+')/g, "'"));
+    var smtlib2 = data.splice(2, data.length - 2).join('\n') + '\n(exit)';
+    res.send([smtlib2, moduleMapping]);
+    // res.send('; benchmark\n' + data.splice(2).join('\n') + '\n(exit)');
   });
 
 });

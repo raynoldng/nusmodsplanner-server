@@ -22,7 +22,9 @@ schedule = querySolver.timetablePlanner(int(numTake), compMods, optMods)
 print schedule
 '''
 #print 'Calling: ' + str(int(numTake)) + " " + str(compMods) + " " + str(optMods)
-smtlib2 = querySolverBV.parseQuery(int(numTake), compMods, optMods)
+smtlib2, moduleMapping = querySolverBV.parseQuery(int(numTake), compMods, optMods)
 print smtlib2
+print json.dumps(moduleMapping)
+
 
 sys.stdout.flush()
