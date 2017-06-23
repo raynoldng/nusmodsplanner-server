@@ -33,26 +33,6 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-router.get('/freeday/:numToTake/:compMods', (req, res) => {
-  var numToTake = req.params.numToTake,
-      compMods = req.params.compMods,
-      optMods = req.params.optMods;
-
-  const data = {
-    numToTake: numToTake,
-    compMods: (compMods == 'null') ? [] : compMods.split(','),
-    optMods: (optMods == 'null') ? [] : optMods.split(',')
-  };
-
-  console.log(data);
-
-  // do somthing with the data
-  dataHandler(data, (data) => {
-    res.send('; benchmark\n' + data.splice(2).join('\n') + '\n(exit)');
-  });
-
-});
-
 router.get('/freeday/:numToTake/:compMods/:optMods', (req, res) => {
   var numToTake = req.params.numToTake,
       compMods = req.params.compMods,
@@ -64,28 +44,40 @@ router.get('/freeday/:numToTake/:compMods/:optMods', (req, res) => {
     optMods: (optMods == 'null') ? [] : optMods.split(',')
   };
 
-  // do somthing with the data
   dataHandler(data, (data) => {
-    // console.log(data);
-    // data is a 2 element array
-    // var data2 = JSON.parse(data);
-    var moduleMapping = JSON.parse(data[data.length - 1].replace(/u'(?=[^:]+')/g, "'"));
-    var smtlib2 = '; benchmark\n' + data.slice(2, data.length - 2).join('\n') + '\n(exit)';
-    res.send([smtlib2, moduleMapping]);
-    // res.send('; benchmark\n' + data.splice(2).join('\n') + '\n(exit)');
+    parseAndSendReq(data, res);
   });
 
 });
 
-router.get('/freeday/:mods/:options', (req, res) => {
-  console.log(req.params.options);
+router.get('/freeday/:numToTake/:compMods/:optMods/:options', (req, res) => {
+  var numToTake = req.params.numToTake,
+    compMods = req.params.compMods,
+    optMods = req.params.optMods,
+    options = req.params.options;
+
   const data = {
-    mods: req.params.mods.split(','),
-    options: JSON.parse(req.params.options)
+    numToTake: numToTake,
+    compMods: (compMods == 'null') ? [] : compMods.split(','),
+    optMods: (optMods == 'null') ? [] : optMods.split(','),
+    options: (options == 'null') ? [] : JSON.parse(options)
   };
-  res.send(data);
+
+  console.log('with options passed:');
+  console.log(data);
+
+  // do somthing with the data
+  dataHandler(data, (data) => {
+    res.send('; benchmark\n' + data.splice(2).join('\n') + '\n(exit)');
+  });
+
 });
 
+let parseAndSendReq = (data, res) => {
+  var moduleMapping = JSON.parse(data[data.length - 1].replace(/u'(?=[^:]+')/g, "'"));
+  var smtlib2 = '; benchmark\n' + data.slice(2, data.length - 2).join('\n') + '\n(exit)';
+  res.send([smtlib2, moduleMapping]);
+};
 
 // Handle data
 let dataHandler = function(data, cb) {
@@ -101,7 +93,7 @@ let dataHandler = function(data, cb) {
       cb(results);
     }
   });
-}
+};
 
 // REGISTER OUR ROUTES
 // all of our routes will be prefixed with /api
