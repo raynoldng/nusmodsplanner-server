@@ -33,42 +33,25 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-router.get('/freeday/:numToTake/:compMods/:optMods', (req, res) => {
-  var numToTake = req.params.numToTake,
-      compMods = req.params.compMods,
-      optMods = req.params.optMods;
 
-  const data = {
-    numToTake: numToTake,
-    compMods: (compMods == 'null') ? [] : compMods.split(','),
-    optMods: (optMods == 'null') ? [] : optMods.split(',')
-  };
-
-  dataHandler(data, (data) => {
-    parseAndSendRes(data, res);
-  });
-
-});
-
-router.get('/freeday/:numToTake/:compMods/:optMods/:options', (req, res) => {
+router.get('/:numToTake/:compMods/:optMods/:options', (req, res) => {
   var numToTake = req.params.numToTake,
     compMods = req.params.compMods,
     optMods = req.params.optMods,
     options = req.params.options;
 
+  // console.log('options:');
+  // console.log(decodeURIComponent(options));
+
   const data = {
     numToTake: numToTake,
     compMods: (compMods == 'null') ? [] : compMods.split(','),
     optMods: (optMods == 'null') ? [] : optMods.split(','),
-    options: (options == 'null') ? [] : JSON.parse(options)
+    options: (options == 'null') ? [] : JSON.parse(decodeURIComponent(options))
   };
 
-  console.log('with options passed:');
-  console.log(data);
-
-  // do somthing with the data
   dataHandler(data, (data) => {
-    res.send('; benchmark\n' + data.splice(2).join('\n') + '\n(exit)');
+    parseAndSendRes(data, res);
   });
 
 });
