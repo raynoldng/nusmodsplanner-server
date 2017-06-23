@@ -45,7 +45,7 @@ router.get('/freeday/:numToTake/:compMods/:optMods', (req, res) => {
   };
 
   dataHandler(data, (data) => {
-    parseAndSendReq(data, res);
+    parseAndSendRes(data, res);
   });
 
 });
@@ -73,7 +73,7 @@ router.get('/freeday/:numToTake/:compMods/:optMods/:options', (req, res) => {
 
 });
 
-let parseAndSendReq = (data, res) => {
+let parseAndSendRes = (data, res) => {
   var moduleMapping = JSON.parse(data[data.length - 1].replace(/u'(?=[^:]+')/g, "'"));
   var smtlib2 = '; benchmark\n' + data.slice(2, data.length - 2).join('\n') + '\n(exit)';
   res.send([smtlib2, moduleMapping]);
