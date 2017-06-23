@@ -1,7 +1,7 @@
 import config
 import sys
 import json
-import querySolverBV
+import queryParserBV
 
 data = sys.argv[1]
 data = json.loads(data)
@@ -17,12 +17,15 @@ if 'optMods' in data:
 else:
     optMods = []
 
-''' Removed since solving the query has been moved to the client side
-schedule = querySolver.timetablePlanner(int(numTake), compMods, optMods)
-print schedule
+if 'options' in data:
+    options = data['options']
+else:
+    options = {}
+
+''' Print out the SMTLIB 2 query first followed by the module mapping (JSON)
+Last line of output will be module mapping
 '''
-#print 'Calling: ' + str(int(numTake)) + " " + str(compMods) + " " + str(optMods)
-smtlib2, moduleMapping = querySolverBV.parseQuery(int(numTake), compMods, optMods)
+smtlib2, moduleMapping = queryParserBV.parseQuery(int(numTake), compMods, optMods, options)
 print smtlib2
 print json.dumps(moduleMapping)
 
