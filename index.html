@@ -23,9 +23,9 @@ Output:<br/>
 <textarea id='output' cols=100 rows=10>
 </textarea><br/>
 
-<script src="static/boolector.js"></script>
+<!-- <script src="static/boolector.js"></script> -->
 <script>
-var solve_string = Module.cwrap('solve_string', 'string', ['string', 'number']);
+// var solve_string = Module.cwrap('solve_string', 'string', ['strin'g, 'number']);
 var BASE_URL = 'http://localhost:3001/api/'
 // For now no error checking what so ever
 // function query() {
@@ -48,42 +48,38 @@ function query() {
     var smtlib2 = data2[0];
     var mapping = data2[1]; // no really needed
     // console.log(smtlib2);
-    outcome = solveSmt(smtlib2)
-    console.log(outcome)
 
     var smtQuery = document.getElementById('query');
     smtQuery.value = smtlib2
 
-    var output = document.getElementById('output');
-    output.value = outcome[0]
-
-  })
+    solveSmt(smtlib2)
+  });
 }
 
 function query2() {
   var query = document.getElementById('query').value;
-  outcome = solveSmt(query)
-  console.log(outcome)
-
-  var output = document.getElementById('output');
-  output.value = outcome[0]
-
+  solveSmt(query)
 }
 
+function solveSmt(query, cb) {
 
-function solveSmt(query) {
+  fetch('static/boolector.js').then(function(data) {return data.text()}).then(function(data) {
+    eval(data);
+    var solveString = Module.cwrap('solve_string', 'string', ['string', 'number']);
+    var output = '';
+    Module.print = function (x) {
+      output += x + '\n';
+    };
+    Module.printErr = function (x) {
+      output += x + '\n';
+    };
+    var result = solveString(query, 2)
+    var outcome = [output, result];
 
-  var solveString = Module.cwrap('solve_string', 'string', ['string', 'number']);
-  var output = '';
-  Module.print = function (x) {
-    output += x + '\n';
-  };
-  Module.printErr = function (x) {
-    output += x + '\n';
-  };
-  var result = solveString(query, 2);
-
-  return [output, result];
+    var output = document.getElementById('output');
+    output.value = outcome[0]
+    
+  }) 
 }
 
 </script>
