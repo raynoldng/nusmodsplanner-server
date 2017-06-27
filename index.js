@@ -58,7 +58,7 @@ router.get('/:numToTake/:compMods/:optMods/:options', (req, res) => {
 
 let parseAndSendRes = (data, res) => {
   var moduleMapping = JSON.parse(data[data.length - 1].replace(/u'(?=[^:]+')/g, "'"));
-  var smtlib2 = '; benchmark\n' + data.slice(2, data.length - 2).join('\n') + '\n(exit)';
+  var smtlib2 = '; benchmark\n' + data.slice(2, data.length - 2).join('\n') + '\n\n(exit)';
   res.send([smtlib2, moduleMapping]);
 };
 
