@@ -39,7 +39,7 @@ var BASE_URL = 'http://localhost:3001/api/'
 //   })
 // }
 
-function query() {
+function query1() {
   var input = document.getElementById('input').value;
   var url = BASE_URL + input;
   console.log('url:' + url);
@@ -61,8 +61,28 @@ function query2() {
   solveSmt(query)
 }
 
-function solveSmt(query, cb) {
+function query() {
+  var input = document.getElementById('input').value;
+  var url = BASE_URL + input;
+  console.log('url:' + url);
+  fetch(url).then(function(data) {return data.text()}).then(function(data) {
+    var data2 = JSON.parse(data)
+    var smtlib2 = data2[0];
+    var mapping = data2[1]; // no really needed
+    // console.log(smtlib2);
 
+    var smtQuery = document.getElementById('query');
+    smtQuery.value = smtlib2
+
+    solveSmt2(smtlib2, function(outcome) {
+      // populate output
+      var output = document.getElementById('output');
+      output.value = outcome[0]
+    })
+  });
+}
+
+function solveSmt(query, cb) {
   fetch('static/boolector.js').then(function(data) {return data.text()}).then(function(data) {
     eval(data);
     var solveString = Module.cwrap('solve_string', 'string', ['string', 'number']);
@@ -75,11 +95,10 @@ function solveSmt(query, cb) {
     };
     var result = solveString(query, 2)
     var outcome = [output, result];
-
-    var output = document.getElementById('output');
-    output.value = outcome[0]
-    
-  }) 
+    return outcome;
+  }).then(function(outcome) {
+    cb(outcome)
+  })
 }
 
 </script>
