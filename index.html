@@ -14,38 +14,81 @@ Demo of NUSModsPlanner, enter the mods that you are interested in separated by a
 
 
 Input:<br/>
-<textarea id='input' cols=60 rows=30></textarea><br/>
+<textarea id='input' cols=100 rows=1>5/CS1010,CS1231,CS2105,ST2131/CS2020,MA1101R/%7B%22freeday%22%3Afalse%7D
+</textarea><br/>
+Query:<br/>
+<textarea id='query' cols=100 rows=10>
+</textarea><br/>
 Output:<br/>
-<textarea id='output' cols=60 rows=10>
+<textarea id='output' cols=100 rows=10>
 </textarea><br/>
 
 <script src="static/boolector.js"></script>
 <script>
 var solve_string = Module.cwrap('solve_string', 'string', ['string', 'number']);
-var BASE_URL = 'http://localhost:3001'
+var BASE_URL = 'http://localhost:3001/api/'
 // For now no error checking what so ever
+// function query() {
+//   // test for compulsory mods first
+//   var input = document.getElementById('input').value;
+//   var test_url = BASE_URL + "/api/4/null/CS2020,ST2131,CS2100,MA1101R,CS1231,CS2105,CS1020";
+//   jQuery.get(test_url, function (data, status) {
+//     /* alert("Data: " + data + "\nStatus: " + status);*/
+//     console.log(data);
+//     var result = solve_string(data, 2)
+//   })
+// }
+
 function query() {
-  // test for compulsory mods first
   var input = document.getElementById('input').value;
-  var test_url = BASE_URL + "/api/freeday/4/null/CS2020,ST2131,CS2100,MA1101R,CS1231,CS2105,CS1020";
-  jQuery.get(test_url, function (data, status) {
-    /* alert("Data: " + data + "\nStatus: " + status);*/
-    console.log(data);
-    var result = solve_string(data, 2)
+  var url = BASE_URL + input;
+  console.log('url:' + url);
+  fetch(url).then(function(data) {return data.text()}).then(function(data) {
+    var data2 = JSON.parse(data)
+    var smtlib2 = data2[0];
+    var mapping = data2[1]; // no really needed
+    // console.log(smtlib2);
+    outcome = solveSmt(smtlib2)
+    console.log(outcome)
+
+    var smtQuery = document.getElementById('query');
+    smtQuery.value = smtlib2
+
+    var output = document.getElementById('output');
+    output.value = outcome[0]
+
   })
 }
 
+function query2() {
+  var query = document.getElementById('query').value;
+  outcome = solveSmt(query)
+  console.log(outcome)
 
-// Testing function.
-var solve_string = Module.cwrap('solve_string', 'string', ['string', 'number']);
-function test(problem, format, expected) {
-  // console.log('Trying to solve: ' + problem);
-  var result = solve_string(problem, format);
-  console.log('Got: ' + result);
-  console.log('Expected: ' + expected);
+  var output = document.getElementById('output');
+  output.value = outcome[0]
+
 }
+
+
+function solveSmt(query) {
+
+  var solveString = Module.cwrap('solve_string', 'string', ['string', 'number']);
+  var output = '';
+  Module.print = function (x) {
+    output += x + '\n';
+  };
+  Module.printErr = function (x) {
+    output += x + '\n';
+  };
+  var result = solveString(query, 2);
+
+  return [output, result];
+}
+
 </script>
 <input value='Solve' type='button' onclick='query()'>
+<input value='Solve Again' type='button' onclick='query2()'>
 
 </body>
 </html>
