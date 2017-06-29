@@ -10,6 +10,8 @@ function q() {
     return function() {}
 }
 var t;
+var outputBuffer = "";
+var errOutputBuffer = "";
 t || (t = eval("(function() { try { return Module || {} } catch(e) { return {} } })()"));
 var aa = {}, u;
 for (u in t)
@@ -19,12 +21,26 @@ var v = "object" === typeof process && "function" === typeof require
   , ca = "function" === typeof importScripts
   , da = !ba && !v && !ca;
 if (v) {
+    t.printFlush = function() {
+        var result = outputBuffer;
+        outputBuffer = "";
+        return result;
+    }
+    ;
+    t.errorFlush = function() {
+        var result = errOutputBuffer;
+        errOutputBuffer = "";
+        return result;
+    }
+    ;
     t.print = function(a) {
-        process.stdout.write(a + "\n")
+        // process.stdout.write(a + "\n")
+        outputBuffer += a + "\n"
     }
     ;
     t.printErr = function(a) {
-        process.stderr.write(a + "\n")
+        // process.stderr.write(a + "\n")
+        errOutputBuffer += a + "\n"
     }
     ;
     var ea = require("fs")
@@ -69,11 +85,24 @@ if (v) {
     ,
     "undefined" != typeof arguments && (t.arguments = arguments),
     "undefined" !== typeof console ? (t.print = function(a) {
-        console.log(a)
+        // console.log(a)
+        outputBuffer += a + "\n"
     }
     ,
     t.printErr = function(a) {
-        console.log(a)
+        // console.log(a)
+        errOutputBuffer += a + "\n"
+    },
+    t.printFlush = function() {
+        var result = outputBuffer;
+        outputBuffer = "";
+        return result;
+    }
+    ,
+    t.errorFlush = function() {
+        var result = errOutputBuffer;
+        errOutputBuffer = "";
+        return result;
     }
     ) : t.print = q(),
     ba ? this.Module = t : t.load = importScripts) : e("Unknown runtime environment. Where are we?");

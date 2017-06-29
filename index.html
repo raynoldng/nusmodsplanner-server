@@ -27,38 +27,14 @@ Output:<br/>
 <script>
 // var solve_string = Module.cwrap('solve_string', 'string', ['strin'g, 'number']);
 var BASE_URL = 'http://localhost:3001/api/'
-// For now no error checking what so ever
-// function query() {
-//   // test for compulsory mods first
-//   var input = document.getElementById('input').value;
-//   var test_url = BASE_URL + "/api/4/null/CS2020,ST2131,CS2100,MA1101R,CS1231,CS2105,CS1020";
-//   jQuery.get(test_url, function (data, status) {
-//     /* alert("Data: " + data + "\nStatus: " + status);*/
-//     console.log(data);
-//     var result = solve_string(data, 2)
-//   })
-// }
-
-function query1() {
-  var input = document.getElementById('input').value;
-  var url = BASE_URL + input;
-  console.log('url:' + url);
-  fetch(url).then(function(data) {return data.text()}).then(function(data) {
-    var data2 = JSON.parse(data)
-    var smtlib2 = data2[0];
-    var mapping = data2[1]; // no really needed
-    // console.log(smtlib2);
-
-    var smtQuery = document.getElementById('query');
-    smtQuery.value = smtlib2
-
-    solveSmt(smtlib2)
-  });
-}
 
 function query2() {
   var query = document.getElementById('query').value;
-  solveSmt(query)
+  solveSmt(query, function(outcome) {
+    // populate output
+    var output = document.getElementById('output');
+    output.value = outcome[0]
+  })
 }
 
 function query() {
@@ -74,7 +50,7 @@ function query() {
     var smtQuery = document.getElementById('query');
     smtQuery.value = smtlib2
 
-    solveSmt2(smtlib2, function(outcome) {
+    solveSmt(smtlib2, function(outcome) {
       // populate output
       var output = document.getElementById('output');
       output.value = outcome[0]
@@ -85,19 +61,21 @@ function query() {
 function solveSmt(query, cb) {
   fetch('static/boolector.js').then(function(data) {return data.text()}).then(function(data) {
     eval(data);
+    window.Module = Module
     var solveString = Module.cwrap('solve_string', 'string', ['string', 'number']);
-    var output = '';
-    Module.print = function (x) {
-      output += x + '\n';
-    };
-    Module.printErr = function (x) {
-      output += x + '\n';
-    };
+    // var output = '';
+    // Module.print = function (x) {
+    //   output += x + '\n';
+    // };
+    // Module.printErr = function (x) {
+    //   output += x + '\n';
+    // };
     var result = solveString(query, 2)
+    var output = Module.printFlush();
     var outcome = [output, result];
     return outcome;
   }).then(function(outcome) {
-    cb(outcome)
+    if (cb) cb(outcome)
   })
 }
 
