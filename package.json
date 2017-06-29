@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start2": "babel-node index.js --presets es2015,stage-2",
-    "start": "nodemon index.js --exec babel-node --presets es2015,stage-2"
+    "start": "nodemon index.js --exec babel-node --presets es2015,stage-2",
+    "bundle": "webpack"
   },
   "keywords": [
     "REST"
@@ -25,6 +26,7 @@
     "cors": "^2.8.3",
     "express": "^4.15.3",
     "python-shell": "^0.4.0",
-    "xmlhttprequest": "^1.8.0"
+    "xmlhttprequest": "^1.8.0",
+    "webpack": "^2.3.0"
   }
 }
