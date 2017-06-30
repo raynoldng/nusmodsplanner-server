@@ -66,6 +66,7 @@ let parseAndSendRes = (data, res) => {
 let dataHandler = function(data, cb) {
   const options = {
     mode: 'text',
+    pythonPath: '/usr/bin/python2.7',
     args: JSON.stringify(data)
   };
 

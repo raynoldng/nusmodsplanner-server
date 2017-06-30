@@ -63,15 +63,14 @@ function solveSmt(query, cb) {
     eval(data);
     window.Module = Module
     var solveString = Module.cwrap('solve_string', 'string', ['string', 'number']);
-    // var output = '';
-    // Module.print = function (x) {
-    //   output += x + '\n';
-    // };
-    // Module.printErr = function (x) {
-    //   output += x + '\n';
-    // };
+    var output = '';
+    Module.print = function (x) {
+      output += x + '\n';
+    };
+    Module.printErr = function (x) {
+      output += x + '\n';
+    };
     var result = solveString(query, 2)
-    var output = Module.printFlush();
     var outcome = [output, result];
     return outcome;
   }).then(function(outcome) {
