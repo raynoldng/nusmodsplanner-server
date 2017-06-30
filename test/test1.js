@@ -23,8 +23,19 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 //   'number', // return type
 //   ['number'], // argument types
 //   [28]); // arguments
+Module = require('../static/boolector');
+Module.print = function (x) {
+      output += x + '\n';
+};
+    
+function solvePrint(query) {
+	var output = '';
+	var result = Module.ccall('solve_string','string',['string', 'number'],
+		[query, 2]);
+	return [result, output]
+}
 
-function solve(query) {
+function solveFlush(query) {
 	var Module = require('../static/boolector')
 	Object.freeze(Module)
 	var result = Module.ccall('solve_string','string',['string', 'number'],
@@ -33,15 +44,8 @@ function solve(query) {
 	return [result, output]
 }
 
+solve = solvePrint;
 
-// buggy version
-function solve2(query) {
-	var result = solveString(query, 2);
-	var output = Module.printFlush();
-	var outcome = [result, output];
-
-	return outcome;
-}
 
 // init query
 var BASE_URL = 'http://localhost:3001/api/'
@@ -67,10 +71,10 @@ function syncQuery(url) {
 }
 
 console.log(syncQuery(q1)[0])
-console.log(syncQuery(q2)[0])
 console.log(syncQuery(q1)[0])
 console.log(syncQuery(q2)[0])
+console.log(syncQuery(q1)[0])
+console.log(syncQuery(q1)[0])
+console.log(syncQuery(q1)[0])
 console.log(syncQuery(q2)[0])
-console.log(syncQuery(q1)[0])
-console.log(syncQuery(q1)[0])
-console.log(syncQuery(q1)[0])
+console.log(syncQuery(q2)[0])
