@@ -9,13 +9,8 @@ let app = express(),
     port = process.env.PORT || 3001;
 let router = express.Router();
 app.server = http.createServer(app);
-
-// enable CORS
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
+let semester1 = 'AY1718S1';
+let semester2 = 'AY1617S2';
 
 // TODO decide if we need this
 app.use(cors());
@@ -24,31 +19,28 @@ app.use(cors());
 app.use("/static", express.static(__dirname + '/static'));
 app.use("/build", express.static(__dirname + '/build'));
 
-// ROUTES
-// router.get('/', (req, res) => {
-//   res.json({message: 'Hooray! Welcome to our API!'});
-// });
-
+// For testing purposes, should be removed in production
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+router.get('/:semester/:numToTake/:compMods/:optMods/:options', (req, res) => {
+  var semester = req.params.semester,
+      numToTake = req.params.numToTake,
+      compMods = req.params.compMods,
+      optMods = req.params.optMods,
+      options = req.params.options;
 
-router.get('/:numToTake/:compMods/:optMods/:options', (req, res) => {
-  var numToTake = req.params.numToTake,
-    compMods = req.params.compMods,
-    optMods = req.params.optMods,
-    options = req.params.options;
-
-  // console.log('options:');
-  // console.log(decodeURIComponent(options));
 
   const data = {
+    semester: (semester === 1) ? semester1 : semester2,
     numToTake: numToTake,
     compMods: (compMods == 'null') ? [] : compMods.split(','),
     optMods: (optMods == 'null') ? [] : optMods.split(','),
     options: (options == 'null') ? [] : JSON.parse(decodeURIComponent(options))
   };
+
+  console.log(data);
 
   dataHandler(data, (data) => {
     parseAndSendRes(data, res);

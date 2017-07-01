@@ -33,10 +33,10 @@ function solve(boolector, query) {
     boolector.printErr = function (x) {
       output += x + '\n';
     };
-    var solveString = boolector.cwrap('solve_string', 'string', ['string', 'number']);
-    var result = solveString(query, 2)
-    var outcome = [result, outcome];
-    return outcome;
+  var solveString = boolector.cwrap('solve_string', 'string', ['string', 'number']);
+  var result = solveString(query, 2);
+  var outcome = [result, output];
+  return outcome;
 }
 
 function solveQuery(query, bool1, bool2) {
@@ -44,7 +44,7 @@ function solveQuery(query, bool1, bool2) {
 	if(outcome1[0] == 'ERROR') {
 		return solve(bool2, query);
 	} else {
-		return outcome1
+		return outcome1;
 	}
 }
 
@@ -52,10 +52,10 @@ var bool1 = createBoolector();
 var bool2 = createBoolector();
 
 // init query
-var BASE_URL = 'http://localhost:3001/api/'
+var BASE_URL = 'http://localhost:3001/api/';
 
-var q1 = BASE_URL + '5/CS1010,CS1231,CS2105,ST2131/CS2020,MA1101R/%7B%22freeday%22%3Afalse%7D'
-var q2 = BASE_URL + '5/CS1010,CS1231,CS2105,ST2131/CS2020,MA1101R/%7B%22freeday%22%3Atrue%7D'
+var q1 = BASE_URL + '2/6/CS1010,CS1231,CS2105,ST2131/CS2020,MA1101R/%7B%22freeday%22%3Afalse%7D';
+var q2 = BASE_URL + '2/5/CS1010,CS1231,CS2105,ST2131/CS2020,MA1101R/%7B%22freeday%22%3Atrue%7D';
 
 function syncQuery(url) {
 	var request = new XMLHttpRequest();
@@ -65,25 +65,24 @@ function syncQuery(url) {
 
 	if (request.status === 200) {
 	  	// console.log(request.responseText);
-	  	var data2 = JSON.parse(request.responseText)
+	  var data2 = JSON.parse(request.responseText);
 		var smtlib2 = data2[0];
 		var mapping = data2[1]; // no really needed
 		var outcome = solveQuery(smtlib2, bool1, bool2);
 		return outcome;
 	}
 
-}
+};
 
-
-console.log(syncQuery(q1)[0])
-console.log(syncQuery(q2)[0])
-console.log(syncQuery(q1)[0])
-console.log(syncQuery(q1)[0])
-console.log(syncQuery(q2)[0])
-console.log(syncQuery(q1)[0])
-console.log(syncQuery(q2)[0])
-console.log(syncQuery(q1)[0])
-console.log(syncQuery(q2)[0])
-console.log(syncQuery(q1)[0])
+console.log(syncQuery(q1)[0]);
+console.log(syncQuery(q2)[0]);
+console.log(syncQuery(q1)[0]);
+console.log(syncQuery(q1)[0]);
+console.log(syncQuery(q2)[0]);
+console.log(syncQuery(q1)[0]);
+console.log(syncQuery(q2)[0]);
+console.log(syncQuery(q1)[0]);
+console.log(syncQuery(q2)[0]);
+console.log(syncQuery(q1)[0]);
 
 
