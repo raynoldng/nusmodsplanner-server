@@ -4,7 +4,7 @@
   "description": "Backend of NUSMods Planner",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/mocha --reporter spec",
     "start2": "babel-node index.js --presets es2015,stage-2",
     "start": "nodemon index.js --exec babel-node --presets es2015,stage-2",
     "bundle": "webpack"
@@ -23,10 +23,12 @@
   },
   "dependencies": {
     "body-parser": "^1.17.2",
+    "chai": "^4.0.2",
     "cors": "^2.8.3",
     "express": "^4.15.3",
+    "mocha": "^3.4.2",
     "python-shell": "^0.4.0",
-    "xmlhttprequest": "^1.8.0",
-    "webpack": "^2.3.0"
+    "webpack": "^2.3.0",
+    "xmlhttprequest": "^1.8.0"
   }
 }
