@@ -26,7 +26,6 @@ else:
 ''' Print out the SMTLIB 2 query first followed by the module mapping (JSON)
 Last line of output will be module mapping
 '''
-print (int(numTake), compMods, optMods, options, semester)
 smtlib2, moduleMapping = queryParserBV.parseQuery(int(numTake), compMods, optMods, options, semester)
 print smtlib2
 print json.dumps(moduleMapping)
