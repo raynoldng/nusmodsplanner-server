@@ -16,6 +16,10 @@ var _ = require('lodash');
 
 function query(moduleCode) {
 	url = 'http://api.nusmods.com/2016-2017/2/modules/' + moduleCode + '/timetable.json'
+	var request = new XMLHttpRequest();
+	request.open('GET', url, false);
+	request.send(null);
+	return JSON.parse(request.responseText);
 }
 
 function timetableHours(lessonSlot) {
