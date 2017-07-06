@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 });
 
 router.get('/:semester/:numToTake/:compMods/:optMods/:options', (req, res) => {
-  var semester = req.params.semester,
+  var semester = parseInt(req.params.semester),
       numToTake = req.params.numToTake,
       compMods = req.params.compMods,
       optMods = req.params.optMods,
@@ -40,7 +40,7 @@ router.get('/:semester/:numToTake/:compMods/:optMods/:options', (req, res) => {
     options: (options == 'null') ? [] : JSON.parse(decodeURIComponent(options))
   };
 
-  console.log(data);
+  // console.log(data);
 
   dataHandler(data, (data) => {
     parseAndSendRes(data, res);
