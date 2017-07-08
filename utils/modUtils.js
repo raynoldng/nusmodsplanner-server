@@ -84,7 +84,6 @@ function timetableValid(timetable) {
 		for (var j = 0; j < hours.length; j++) {
 			var h = hours[j];
 			if (blockedHours.has(h)) {
-				console.log('FUCK! ' + h);
 				validFlag = false;
 				break;
 			} else {

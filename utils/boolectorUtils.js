@@ -1,4 +1,5 @@
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var _ = require('lodash');
 
 function createBoolector() {
 	var request = new XMLHttpRequest();
@@ -28,4 +29,47 @@ function boolectorSolve(boolector, query) {
   return outcome;
 }
 
-module.exports = { solve }
+function parseOutput(output) {
+  const outputArr = output.split('\n');
+  const result = {
+    result: outputArr[0],
+  };
+  for (let i = 1; i < outputArr.length; i += 1) {
+    const line = outputArr[i].trim();
+
+    const key = line.substring(0, line.lastIndexOf(' ')).replace(/\|/g, '');
+    const value = line.substring(line.lastIndexOf(' '));
+    result[key] = parseInt(value, 2);
+  }
+  return result;
+}
+
+function slotsFromModel(output, compModuleCodes, optModuleCodes, numMods, moduleMapping) {
+	// copied from NUSMods
+  const model = parseOutput(output);
+  const modsList = [...compModuleCodes, ...optModuleCodes];
+  // map indices to choosen mods
+  const chosenMods = _.range(0, numMods).map((i) => {
+    const a = model[`x_${i}`];
+    // console.log(`x_${i} : ${a}`);
+    return modsList[a];
+  });
+
+  const chosenModsLessons = Object.keys(model).filter((k) => {
+    return chosenMods.reduce((acc, val) => {
+      return acc || k.startsWith(val);
+    }, false);
+  });
+
+  const timetable = chosenModsLessons.map((lesson) => {
+    const lesson2 = lesson.split('_');
+    const mod = lesson2[0];
+    const lessonType = lesson2[1];
+    const lessonTypeSlot = moduleMapping[mod][lessonType][model[`${mod}_${lessonType}`]];
+    return `${mod}_${lessonType}_${lessonTypeSlot}`;
+  });
+  return timetable;
+}
+
+
+module.exports = { solve, slotsFromModel }
