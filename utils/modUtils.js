@@ -22,6 +22,7 @@ function query(moduleCode) {
 	return JSON.parse(request.responseText);
 }
 
+
 function timetableHours(lessonSlot) {
 	/* Sample lesson slot
 	{ ClassNo: '1',
@@ -46,6 +47,12 @@ function timetableHours(lessonSlot) {
 	}
 }
 
+function flatten(arr) {
+  return arr.reduce(function (flat, toFlatten) {
+    return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+  }, []);
+}
+
 function timetableValid(timetable) {
 	// map each lesson into list of hours
 	hoursOfEachLesson = timetable.map(function(lesson) {
@@ -59,22 +66,34 @@ function timetableValid(timetable) {
 			return lesson.ClassNo == ClassNo;
 		})[0];
 
-		return timetableHours(selectedLesson);
+		hours = timetable.filter(function(lesson) {
+			return lesson.ClassNo == ClassNo;
+		}).map(function(lesson) {
+			return timetableHours(lesson);
+		}).reduce(function(flat, toFlatten) {
+			return flat.concat(toFlatten);
+		}, []);
+
+		return hours
 	});
 
 	blockedHours = new Set();
-
-	hoursOfEachLesson.forEach(function(hours) {
-		hours.forEach(function(h) {
+	validFlag = true;
+	for (var i = 0; i < hoursOfEachLesson.length; i++) {
+		var hours = hoursOfEachLesson[i];
+		for (var j = 0; j < hours.length; j++) {
+			var h = hours[j];
 			if (blockedHours.has(h)) {
-				return false;
+				console.log('FUCK! ' + h);
+				validFlag = false;
+				break;
 			} else {
 				blockedHours.add(h);
 			}
-		});
-	});
+		}
+	}
 
-	return true;
+	return validFlag;
 }
 
 module.exports = {

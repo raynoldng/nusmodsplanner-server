@@ -11,9 +11,13 @@ describe("Module Utilities", function() {
   });
 
   describe("NUSMods timetable valid checker", function() {
-    it("checks if timetable is valid (no clashes)", function() {
-      candidateTimetable = ["MA1102R_Lecture_SL1", "MA1102R_Tutorial_T04", "MA1102R_Laboratory_B06", "CS1231_Tutorial_15", "CS1231_Sectional Teaching_1", "GER1000_Tutorial_S05", "MA1100_Tutorial_T06", "MA1100_Lecture_SL1"]
+    it("True for valid timetable (no clash)", function() {
+      candidateTimetable = ["MA1102R_Lecture_SL1", "MA1102R_Tutorial_T04", "MA1102R_Laboratory_B10", "GER1000_Tutorial_S05", "CS1231_Tutorial_18", "CS1231_Sectional Teaching_1", "MA1100_Tutorial_T06", "MA1100_Lecture_SL1"]
       expect(modUtils.timetableValid(candidateTimetable)).to.equal(true);
+    })
+    it("False if there is a clash", function() {
+      candidateTimetable = ["MA1102R_Lecture_SL1", "MA1102R_Tutorial_T04", "MA1102R_Laboratory_B06", "CS1231_Tutorial_15", "CS1231_Sectional Teaching_2", "GER1000_Tutorial_S05", "MA1100_Tutorial_T06", "MA1100_Lecture_SL1"]
+      expect(modUtils.timetableValid(candidateTimetable)).to.equal(false);
     })
   })
 });
