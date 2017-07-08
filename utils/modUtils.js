@@ -15,7 +15,7 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var _ = require('lodash');
 
 function query(moduleCode) {
-	url = 'http://api.nusmods.com/2016-2017/2/modules/' + moduleCode + '/timetable.json'
+	url = 'http://api.nusmods.com/2017-2018/1/modules/' + moduleCode + '/timetable.json'
 	var request = new XMLHttpRequest();
 	request.open('GET', url, false);
 	request.send(null);

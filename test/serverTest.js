@@ -2,6 +2,13 @@ var expect = require("chai").expect;
 var fetch = require('node-fetch');
 var request = require("request");
 
+function urlGenerator(numMods, compMods, optMods, options) {
+  const compMods = compModuleCodes.length !== 0 ? compModuleCodes.join(',') : 'null';
+  const optMods = optModuleCodes.length !== 0 ? optModuleCodes.join(',') : 'null';
+  const opts = options || {};
+  return `${plannerBaseUrl}/${semester}/${numMods}/${compMods}/${optMods}/${encodeURIComponent(JSON.stringify(opts))}`;
+}
+
 describe("NUSModsPlanner Server", function() {
   it("API request returns 200", function() {
     var url = 'http://localhost:3001/api/2/5/CS1231,CS2100,CS2105,CS2107,GER1000/null/%7B%7D'
@@ -17,16 +24,22 @@ describe("NUSModsPlanner Server", function() {
     });
   });
 
-  // describe("API query", function() {
-  //   it("should return a SMT-LIB query and module mapping", function() {
-  //     var url = 'http://localhost:3001/api/2/5/CS1231,CS2100,CS2105,CS2107,GER1000/null/%7B%7D'
-  //     fetch(url).then(function(data) {
-  //       var response = JSON.parse(data.text())
-  //       console.log(response);
-  //       expect(response.length).to.equal(2);
-  //     });
-  //   });
-  // });
+  describe("API query", function() {
+    it("should return a SMT-LIB query and module mapping", function() {
+      var url = 'http://localhost:3001/api/2/5/CS1231,CS2100,CS2105,CS2107,GER1000/null/%7B%7D'
+      fetch(url).then(function(data) {
+        var response = JSON.parse(data.text())
+        console.log(response);
+        expect(response.length).to.equal(2);
+      });
+    });
+  });
+
+  // describe("Autobuilder", function() {
+  //   it("should produce a valid timetable", function() {
+      
+  //   })
+  // })
 
 //   // describe("NUSMods timetable valid checker", function() {
 //   //   it("checks if timetable is valid (no clashes)", function() {
