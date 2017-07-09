@@ -64,6 +64,8 @@ let dataHandler = function(data, cb) {
     args: JSON.stringify(data)
   };
 
+  console.log(`args to python: ${options.args}`);
+
   PythonShell.run('query.py', options, (err, results) => {
     if (err) throw err;
 

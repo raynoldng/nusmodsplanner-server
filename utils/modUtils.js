@@ -18,7 +18,7 @@ function query(moduleCode) {
 	url = 'http://api.nusmods.com/2017-2018/1/modules/' + moduleCode + '/timetable.json'
 	var request = new XMLHttpRequest();
 	request.open('GET', url, false);
-	request.send(null);
+	request.send(null);	
 	return JSON.parse(request.responseText);
 }
 
@@ -53,6 +53,28 @@ function flatten(arr) {
   }, []);
 }
 
+function timetableValid2(timetable) {
+	if (timetable.length === 0) {
+		return false;
+	}
+
+	// Check that all lessons are covered
+	// var mods = new Set();
+	// timetable.forEach(function(lesson) {
+	// 	mods.add(lesson.split('_')[0]);
+	// });
+	// console.log(mods);
+
+	// var allLessonTypes = new Set();
+	// for(let mod of mods) {
+	// 	var modJSON = query(mod);
+
+	// }
+
+	// Check that all hours are unique
+
+}
+
 function timetableValid(timetable) {
 	// map each lesson into list of hours
 	hoursOfEachLesson = timetable.map(function(lesson) {
@@ -62,12 +84,10 @@ function timetableValid(timetable) {
 		var ClassNo = tokens[2];
 
 		timetable = query(moduleCode);
-		selectedLesson = timetable.filter(function(lesson) {
-			return lesson.ClassNo == ClassNo;
-		})[0];
 
 		hours = timetable.filter(function(lesson) {
-			return lesson.ClassNo == ClassNo;
+			return lesson.LessonType === LessonType 
+			&& lesson.ClassNo === ClassNo;
 		}).map(function(lesson) {
 			return timetableHours(lesson);
 		}).reduce(function(flat, toFlatten) {

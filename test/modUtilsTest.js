@@ -12,8 +12,12 @@ describe("Module Utilities", function() {
 
   describe("NUSMods timetable valid checker", function() {
     it("True for valid timetable (no clash)", function() {
-      candidateTimetable = ["MA1102R_Lecture_SL1", "MA1102R_Tutorial_T04", "MA1102R_Laboratory_B10", "GER1000_Tutorial_S05", "CS1231_Tutorial_18", "CS1231_Sectional Teaching_1", "MA1100_Tutorial_T06", "MA1100_Lecture_SL1"]
-      expect(modUtils.timetableValid(candidateTimetable)).to.equal(true);
+      this.timeout(0);
+      candidateTimetable1 = ["MA1102R_Lecture_SL2", "MA1102R_Tutorial_T04", "MA1102R_Laboratory_B09", "CS1010_Tutorial_T04", "CS1010_Sectional Teaching_1", "MA1100_Tutorial_T01", "MA1100_Lecture_SL1", "CS2105_Tutorial_6", "CS2105_Lecture_1", "MA1101R_Lecture_SL1", "MA1101R_Tutorial_T05", "MA1101R_Laboratory_B11"]
+      expect(modUtils.timetableValid(candidateTimetable1)).to.equal(true);
+
+      candidateTimetable2 = ["CS1010_Tutorial_T04", "CS1010_Sectional Teaching_1", "MA1100_Tutorial_T05", "MA1100_Lecture_SL1", "MA1101R_Lecture_SL1", "MA1101R_Tutorial_T06", "MA1101R_Laboratory_B10", "MA1102R_Lecture_SL2", "MA1102R_Tutorial_T15", "MA1102R_Laboratory_B09", "CS2105_Tutorial_5", "CS2105_Lecture_1"]
+      expect(modUtils.timetableValid(candidateTimetable2)).to.equal(true);
     })
     it("False if there is a clash", function() {
       candidateTimetable = ["MA1102R_Lecture_SL1", "MA1102R_Tutorial_T04", "MA1102R_Laboratory_B06", "CS1231_Tutorial_15", "CS1231_Sectional Teaching_2", "GER1000_Tutorial_S05", "MA1100_Tutorial_T06", "MA1100_Lecture_SL1"]
