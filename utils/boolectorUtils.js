@@ -44,7 +44,57 @@ function parseOutput(output) {
   return result;
 }
 
-function slotsFromModel(output, compModuleCodes, optModuleCodes, numMods, moduleMapping) {
+function timetableBuilder(smtQuery, moduleMapping, numMods, options) {
+  var result = solve(smtQuery);
+  var outcome = result[0];
+  var modelOutput = result[1];
+
+  if (options.freeday) { // need to account for mock module added
+    numMods += 1;
+  }
+
+  const model = parseOutput(modelOutput);
+  let timetable = [];
+
+  const choosenMods = _.range(0, numMods).forEach((i) => {
+    const modIndex = model[`x_${i}`];
+    const module = moduleMapping[modIndex];
+
+    const moduleCode = module[0];
+    const lessonsMap = module[1];
+
+    Object.keys(lessonsMap).forEach((lesson) => {
+      const choosenSlotIndex = model[`${moduleCode}_${lesson}`];
+      const choosenSlotName = lessonsMap[lesson][choosenSlotIndex];
+      timetable.push(`${moduleCode}_${lesson}_${choosenSlotName}`);
+    });
+  });
+  return timetable;
+}
+
+function slotsFromModel(output, numMods, moduleMapping) {
+  const model = parseOutput(output);
+  let timetable = [];
+
+  const choosenMods = _.range(0, numMods).forEach((i) => {
+    const modIndex = model[`x_${i}`];
+    const module = moduleMapping[modIndex];
+
+    const moduleCode = module[0];
+    const lessonsMap = module[1];
+
+    Object.keys(lessonsMap).forEach((lesson) => {
+      const choosenSlotIndex = model[`${moduleCode}_${lesson}`];
+      const choosenSlotName = lessonsMap[lesson][choosenSlotIndex];
+      timetable.push(`${moduleCode}_${lesson}_${choosenSlotName}`);
+    })
+  });
+
+  return timetable;
+}
+
+// original one
+function slotsFromModel2(output, compModuleCodes, optModuleCodes, numMods, moduleMapping) {
 	// copied from NUSMods
   const model = parseOutput(output);
   const modsList = [...compModuleCodes, ...optModuleCodes];
@@ -72,4 +122,4 @@ function slotsFromModel(output, compModuleCodes, optModuleCodes, numMods, module
 }
 
 
-module.exports = { solve, slotsFromModel }
+module.exports = { solve, slotsFromModel, timetableBuilder }
