@@ -16,7 +16,7 @@ function urlGenerator(numMods, compMods, optMods, options) {
   return `${plannerBaseUrl}/${semester}/${numMods}/${compMods}/${optMods}/${encodeURIComponent(JSON.stringify(opts))}`;
 }
 
-function timetableBuilder(numMods, compMods, optMods, options) {
+function generateTimetable(numMods, compMods, optMods, options) {
   var url = urlGenerator(numMods, compMods, optMods, options);
   var request = new XMLHttpRequest();
   request.open('GET', url, false);
@@ -26,18 +26,12 @@ function timetableBuilder(numMods, compMods, optMods, options) {
   var query = response[0];
   var moduleMapping = response[1];
 
-  var result = boolectorUtils.solve(query);
-  var outcome = result[0];
-  var model = result[1];
-
-  var timetable = boolectorUtils.slotsFromModel(model, compMods, optMods, numMods, moduleMapping);
-
-  return timetable;
+  return boolectorUtils.timetableBuilder(query, moduleMapping, numMods, options);
 }
 
 describe("NUSModsPlanner Server", function() {
   it("API request returns 200", function() {
-    var url = 'http://localhost:3001/api/2/5/CS1231,CS2100,CS2105,CS2107,GER1000/null/%7B%7D'
+    var url = 'http://localhost:3001/api/2/5/CS1231,CS2100,CS2105,CS2107,GER1000/null/%7B%7D';
     request(url, function(error, response, body) {
         expect(response.statusCode).to.equal(200);
     });
@@ -53,7 +47,7 @@ describe("NUSModsPlanner Server", function() {
   it("should return a SMT-LIB query and module mapping", function() {
     var url = 'http://localhost:3001/api/2/5/CS1231,CS2100,CS2105,CS2107,GER1000/null/%7B%7D'
     fetch(url).then(function(data) {
-      var response = JSON.parse(data.text())
+      var response = JSON.parse(data.text());
       // console.log(response);
       expect(response.length).to.equal(2);
     });
@@ -61,29 +55,15 @@ describe("NUSModsPlanner Server", function() {
 
   describe("Autobuilder", function() {
     it("should produce a valid timetable", function() {
+      this.timeout(0);
       var numMods = 4;
       var compMods = ['CS1231', 'GER1000', 'MA1100', 'MA1102R'];
       var optMods = [];
-      var options = {}
+      var options = {};
 
-      var url = urlGenerator(numMods, compMods, optMods, options);
-      // console.log(url);
-      fetch(url).then(function(data) {
-        var response = JSON.parse(data.text());
-        var query = response[0];
-        var moduleMapping = response[1];
-
-        var result = boolectorUtils.solve(query);
-        var outcome = result[0];
-        var model = result[1];
-
-        expect(outcome).to.equal('SAT');
-
-        var timetable = boolectorUtils.slotsFromModel(model, compMods, optMods, numMods, moduleMapping);
-        
-        expect(timetable.length > 0).to.equal(true);
-        expect(modUtils.timetableValid(timetable)).to.equal(true);
-      });
+      const timetable = generateTimetable(numMods, compMods, optMods, options);
+      expect(timetable.length > 0).to.equal(true);
+      expect(modUtils.timetableValid(timetable)).to.equal(true);
     });
 
     it("produce valid timetable, was wrong", function() {
@@ -93,12 +73,24 @@ describe("NUSModsPlanner Server", function() {
       var optMods = ['CS1231'];
       var options = {};
 
-      // const url = 'http://localhost:3001/api/1/5/MA1101R,CS2105,MA1100,CS1010,MA1102R/CS1231/%7B%22numFreedays%22%3A0%2C%22freedays%22%3A%5B%5D%7D';
-      var timetable = timetableBuilder(numMods, compMods, optMods, options);
-      // console.log(timetable);
-
+      const timetable = generateTimetable(numMods, compMods, optMods, options);
       expect(timetable.length > 0).to.equal(true);
       expect(modUtils.timetableValid(timetable)).to.equal(true);
+    });
+
+    it("should not have lesson slots that are undefined", function() {
+      this.timeout(0);
+      const numMods = 4;
+      const optMods = ['GEQ1000','MA1101R','GER1000','MA1100','CS1010','CS1231'];
+      const compMods = [];
+      const options = {freeday: true,
+                       possibleFreedays: []};
+      for (var i = 0; i < 3; i += 1) {
+        const timetable = generateTimetable(numMods, compMods, optMods, options);
+        timetable.forEach(function(lesson) {
+          expect(lesson.includes('undefined')).to.equal(false);
+        });
+      }
     });
   });
 
