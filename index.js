@@ -35,8 +35,8 @@ router.get('/:semester/:numToTake/:compMods/:optMods/:options', (req, res) => {
   const data = {
     semester: (semester === 1) ? semester1 : semester2,
     numToTake: numToTake,
-    compMods: (compMods == 'null') ? [] : compMods.split(','),
-    optMods: (optMods == 'null') ? [] : optMods.split(','),
+    compMods: (compMods == 'null') ? [] : compMods.split(',').filter(m => m !== 'undefined'),
+    optMods: (optMods == 'null') ? [] : optMods.split(',').filter(m => m !== 'undefined'),
     options: (options == 'null') ? [] : JSON.parse(decodeURIComponent(options))
   };
 
